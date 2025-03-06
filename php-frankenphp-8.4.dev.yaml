@@ -8,6 +8,7 @@ contents:
   packages:
     - busybox
     - composer
+    - curl
     - frankenphp-8.4
     - php-frankenphp-8.4-iconv
     - php-frankenphp-8.4-curl
@@ -36,7 +37,7 @@ work-dir: /app
 entrypoint:
   type: service-bundle
   services:
-    frankenphp: /usr/bin/frankenphp run
+    frankenphp: /usr/bin/frankenphp run --config /etc/caddy/Caddyfile
 
 accounts:
   groups:
