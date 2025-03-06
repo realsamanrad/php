@@ -32,6 +32,7 @@ contents:
     - php-frankenphp-8.4-fileinfo
     - php-frankenphp-8.4-exif
 
+
 work-dir: /app
 
 entrypoint:
