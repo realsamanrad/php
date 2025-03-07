@@ -1,0 +1,50 @@
+contents:
+  keyring:
+    - https://wolfi.shyim.me/php-signing.rsa.pub
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  repositories:
+    - https://wolfi.shyim.me
+    - https://packages.wolfi.dev/os
+  packages:
+    - curl
+    - frankenphp-8.3
+    - php-frankenphp-8.3-iconv
+    - php-frankenphp-8.3-curl
+    - php-frankenphp-8.3-gd
+    - php-frankenphp-8.3-xml
+    - php-frankenphp-8.3-simplexml
+    - php-frankenphp-8.3-xmlreader
+    - php-frankenphp-8.3-xmlwriter
+    - php-frankenphp-8.3-mbstring
+    - php-frankenphp-8.3-zip
+    - php-frankenphp-8.3-intl
+    - php-frankenphp-8.3-pdo
+    - php-frankenphp-8.3-pdo_sqlite
+    - php-frankenphp-8.3-mysqlnd
+    - php-frankenphp-8.3-pdo_mysql
+    - php-frankenphp-8.3-mysqli
+    - php-frankenphp-8.3-sodium
+    - php-frankenphp-8.3-openssl
+    - php-frankenphp-8.3-soap
+    - php-frankenphp-8.3-dom
+    - php-frankenphp-8.3-fileinfo
+    - php-frankenphp-8.3-exif
+
+work-dir: /app
+
+entrypoint:
+  type: service-bundle
+  services:
+    frankenphp: /usr/bin/frankenphp run --config /etc/caddy/Caddyfile
+
+accounts:
+  groups:
+    - groupname: php
+      gid: 65532
+  users:
+    - username: php
+      uid: 65532
+  run-as: php
+
+archs:
+  - x86_64
