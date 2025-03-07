@@ -31,7 +31,7 @@ contents:
     - php-frankenphp-8.4-dom
     - php-frankenphp-8.4-fileinfo
     - php-frankenphp-8.4-exif
-
+    - php-frankenphp-8.4-imagick
 
 work-dir: /app
 
