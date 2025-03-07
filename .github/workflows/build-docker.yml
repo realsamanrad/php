@@ -1,12 +1,18 @@
-name: Build and Push Docker Images
+name: Build and Push FrankenPHP Docker Images
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'php-frankenphp-8.4.dev.yaml'
-      - 'php-frankenphp-8.4.yaml'
+      - 'frankenphp-8.1.yaml'
+      - 'frankenphp-8.1.dev.yaml'
+      - 'frankenphp-8.2.yaml'
+      - 'frankenphp-8.2.dev.yaml'
+      - 'frankenphp-8.3.yaml'
+      - 'frankenphp-8.3.dev.yaml'
+      - 'frankenphp-8.4.yaml'
+      - 'frankenphp-8.4.dev.yaml'
 
 jobs:
   build-and-push:
@@ -29,34 +35,88 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PACKAGES_TOKEN }}
 
-      - name: Check for php-frankenphp-8.4.dev.yaml changes
-        id: check-dev-file
+      - name: Check file changes
+        id: check-files
         uses: dorny/paths-filter@v3
         with:
           filters: |
-            dev:
-              - 'php-frankenphp-8.4.dev.yaml'
+            php81dev:
+              - 'frankenphp-8.1.dev.yaml'
+            php81:
+              - 'frankenphp-8.1.yaml'
+            php82dev:
+              - 'frankenphp-8.2.dev.yaml'
+            php82:
+              - 'frankenphp-8.2.yaml'
+            php83dev:
+              - 'frankenphp-8.3.dev.yaml'
+            php83:
+              - 'frankenphp-8.3.yaml'
+            php84dev:
+              - 'frankenphp-8.4.dev.yaml'
+            php84:
+              - 'frankenphp-8.4.yaml'
 
-      - name: Check for php-frankenphp-8.4.yaml changes
-        id: check-prod-file
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            prod:
-              - 'php-frankenphp-8.4.yaml'
-
-      - name: Build and Push Development Image
-        if: steps.check-dev-file.outputs.dev == 'true'
+      - name: Build and Push PHP 8.1 Dev Image
+        if: steps.check-files.outputs.php81dev == 'true'
         run: |
           docker pull cgr.dev/chainguard/apko:latest
-          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build php-frankenphp-8.4.dev.yaml ghcr.io/realsamanrad/frankenphp:8.4-dev image.tar
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build frankenphp-8.1.dev.yaml ghcr.io/realsamanrad/frankenphp:8.1-dev image.tar
+          docker load < image.tar
+          docker push ghcr.io/realsamanrad/frankenphp:8.1-dev-amd64
+
+      - name: Build and Push PHP 8.1 Image
+        if: steps.check-files.outputs.php81 == 'true'
+        run: |
+          docker pull cgr.dev/chainguard/apko:latest
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build frankenphp-8.1.yaml ghcr.io/realsamanrad/frankenphp:8.1 image.tar
+          docker load < image.tar
+          docker push ghcr.io/realsamanrad/frankenphp:8.1-amd64
+
+      - name: Build and Push PHP 8.2 Dev Image
+        if: steps.check-files.outputs.php82dev == 'true'
+        run: |
+          docker pull cgr.dev/chainguard/apko:latest
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build frankenphp-8.2.dev.yaml ghcr.io/realsamanrad/frankenphp:8.2-dev image.tar
+          docker load < image.tar
+          docker push ghcr.io/realsamanrad/frankenphp:8.2-dev-amd64
+
+      - name: Build and Push PHP 8.2 Image
+        if: steps.check-files.outputs.php82 == 'true'
+        run: |
+          docker pull cgr.dev/chainguard/apko:latest
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build frankenphp-8.2.yaml ghcr.io/realsamanrad/frankenphp:8.2 image.tar
+          docker load < image.tar
+          docker push ghcr.io/realsamanrad/frankenphp:8.2-amd64
+
+      - name: Build and Push PHP 8.3 Dev Image
+        if: steps.check-files.outputs.php83dev == 'true'
+        run: |
+          docker pull cgr.dev/chainguard/apko:latest
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build frankenphp-8.3.dev.yaml ghcr.io/realsamanrad/frankenphp:8.3-dev image.tar
+          docker load < image.tar
+          docker push ghcr.io/realsamanrad/frankenphp:8.3-dev-amd64
+
+      - name: Build and Push PHP 8.3 Image
+        if: steps.check-files.outputs.php83 == 'true'
+        run: |
+          docker pull cgr.dev/chainguard/apko:latest
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build frankenphp-8.3.yaml ghcr.io/realsamanrad/frankenphp:8.3 image.tar
+          docker load < image.tar
+          docker push ghcr.io/realsamanrad/frankenphp:8.3-amd64
+
+      - name: Build and Push PHP 8.4 Dev Image
+        if: steps.check-files.outputs.php84dev == 'true'
+        run: |
+          docker pull cgr.dev/chainguard/apko:latest
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build frankenphp-8.4.dev.yaml ghcr.io/realsamanrad/frankenphp:8.4-dev image.tar
           docker load < image.tar
           docker push ghcr.io/realsamanrad/frankenphp:8.4-dev-amd64
 
-      - name: Build and Push Production Image
-        if: steps.check-prod-file.outputs.prod == 'true'
+      - name: Build and Push PHP 8.4 Image
+        if: steps.check-files.outputs.php84 == 'true'
         run: |
           docker pull cgr.dev/chainguard/apko:latest
-          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build php-frankenphp-8.4.yaml ghcr.io/realsamanrad/frankenphp:8.4 image.tar
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build frankenphp-8.4.yaml ghcr.io/realsamanrad/frankenphp:8.4 image.tar
           docker load < image.tar
           docker push ghcr.io/realsamanrad/frankenphp:8.4-amd64
