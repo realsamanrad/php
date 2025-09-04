@@ -1,18 +1,19 @@
-name: Build and Push FrankenPHP Docker Images
+name: Build and Push PHP Docker Images
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'frankenphp-8.1.yaml'
-      - 'frankenphp-8.1.dev.yaml'
-      - 'frankenphp-8.2.yaml'
-      - 'frankenphp-8.2.dev.yaml'
-      - 'frankenphp-8.3.yaml'
-      - 'frankenphp-8.3.dev.yaml'
-      - 'frankenphp-8.4.yaml'
-      - 'frankenphp-8.4.dev.yaml'
+      - "php-8.1-composer.yaml"
+      - "frankenphp-8.1.yaml"
+      - "frankenphp-8.1.dev.yaml"
+      - "frankenphp-8.2.yaml"
+      - "frankenphp-8.2.dev.yaml"
+      - "frankenphp-8.3.yaml"
+      - "frankenphp-8.3.dev.yaml"
+      - "frankenphp-8.4.yaml"
+      - "frankenphp-8.4.dev.yaml"
 
 jobs:
   build-and-push:
@@ -40,6 +41,8 @@ jobs:
         uses: dorny/paths-filter@v3
         with:
           filters: |
+            php81composer:
+              - 'php-8.1-composer.yaml'
             php81dev:
               - 'frankenphp-8.1.dev.yaml'
             php81:
@@ -56,6 +59,15 @@ jobs:
               - 'frankenphp-8.4.dev.yaml'
             php84:
               - 'frankenphp-8.4.yaml'
+
+      - name: Build and Push PHP 8.1 Composer Image
+        if: steps.check-files.outputs.php81composer == 'true'
+        run: |
+          docker pull cgr.dev/chainguard/apko:latest
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build php-8.1-composer.yaml ghcr.io/realsamanrad/php:8.1-composer image.tar
+          docker load < image.tar
+          docker tag ghcr.io/realsamanrad/php:8.1-composer-amd64 ghcr.io/realsamanrad/php:8.1-composer
+          docker push ghcr.io/realsamanrad/php:8.1-composer
 
       - name: Build and Push PHP 8.1 Dev Image
         if: steps.check-files.outputs.php81dev == 'true'

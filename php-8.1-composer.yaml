@@ -1,0 +1,33 @@
+contents:
+  keyring:
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  repositories:
+    - https://packages.wolfi.dev/os
+  packages:
+    - php-8.1
+    - php-8.1-mbstring
+    - php-8.1-openssl
+    - php-8.1-pcntl
+    - php-8.1-curl
+    - php-8.1-zip
+    - php-8.1-fileinfo
+    - php-8.1-iconv
+    - php-8.1-posix
+    - php-8.1-ftp
+    - php-8.1-dom
+    - php-8.1-exif
+    - php-8.1-gd
+    - php-8.1-xml
+    - php-8.1-simplexml
+    - php-8.1-xmlreader
+    - php-8.1-xmlwriter
+    - composer
+    - busybox
+
+work-dir: /app
+
+archs:
+  - x86_64
+
+environment:
+  PATH: /usr/sbin:/sbin:/usr/bin:/bin
