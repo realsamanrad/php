@@ -15,6 +15,10 @@ on:
       - "frankenphp-8.4.yaml"
       - "frankenphp-8.4.dev.yaml"
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest

@@ -5,8 +5,8 @@ contents:
     - https://packages.wolfi.dev/os
   packages:
     - php-8.1
-    - php-8.1-openssl
     - php-8.1-mbstring
+    - php-8.1-openssl
     - php-8.1-pcntl
     - php-8.1-curl
     - php-8.1-zip
