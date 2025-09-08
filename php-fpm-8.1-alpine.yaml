@@ -1,0 +1,76 @@
+contents:
+  keyring:
+    - https://alpinelinux.org/keys/alpine-devel@lists.alpinelinux.org-4a6a0840.rsa.pub
+    - https://alpinelinux.org/keys/alpine-devel@lists.alpinelinux.org-5243ef4b.rsa.pub
+    - https://alpinelinux.org/keys/alpine-devel@lists.alpinelinux.org-524d27bb.rsa.pub
+    - https://alpinelinux.org/keys/alpine-devel@lists.alpinelinux.org-5261cecb.rsa.pub
+  repositories:
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+  packages:
+    - php81
+    - php81-fpm
+    - php81-bcmath
+    - php81-curl
+    - php81-dom
+    - php81-gd
+    - php81-tokenizer
+    - php81-mbstring
+    - php81-mysqlnd
+    - php81-pdo
+    - php81-pdo_mysql
+    - php81-pecl-redis
+    - php81-soap
+    - php81-xml
+    - php81-zip
+    - php81-ftp
+    - php81-fileinfo
+    - php81-iconv
+    - php81-openssl
+    - php81-exif
+    - php81-simplexml
+    - php81-xmlreader
+    - php81-xmlwriter
+    - php81-sodium
+    - php81-pcntl
+    - php81-posix
+    - jpegoptim
+    - optipng
+    - pngquant
+    - gifsicle
+    - libwebp-tools
+    - tzdata
+    - libreoffice
+    - libreoffice-writer
+    - supervisor
+    - ca-certificates
+    - ca-certificates-bundle
+
+work-dir: /var/www
+
+accounts:
+  groups:
+    - groupname: www-data
+      gid: 65532
+  users:
+    - username: www-data
+      uid: 65532
+  run-as: www-data
+
+entrypoint:
+  type: service-bundle
+  services:
+    php-fpm: /usr/sbin/php-fpm81 -F
+
+archs:
+  - x86_64
+
+environment:
+  PATH: /usr/sbin:/sbin:/usr/bin:/bin
+
+paths:
+  - path: /var/log/php81
+    type: directory
+    uid: 65532
+    gid: 65532
+    permissions: 0755
