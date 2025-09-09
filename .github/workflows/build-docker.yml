@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - "php-8.1-composer.yaml"
-      - "php-fpm-8.1-alpine.yaml"
+      - "php-8.1-fpm-alpine.yaml"
       - "frankenphp-8.1.yaml"
       - "frankenphp-8.1.dev.yaml"
       - "frankenphp-8.2.yaml"
@@ -51,7 +51,7 @@ jobs:
             php81composer:
               - 'php-8.1-composer.yaml'
             php81fpm-alpine:
-              - 'php-fpm-8.1-alpine.yaml'
+              - 'php-8.1-fpm-alpine.yaml'
             php81dev:
               - 'frankenphp-8.1.dev.yaml'
             php81:
@@ -73,19 +73,47 @@ jobs:
         if: steps.check-files.outputs.php81composer == 'true'
         run: |
           docker pull cgr.dev/chainguard/apko:latest
-          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build php-8.1-composer.yaml ghcr.io/realsamanrad/php:8.1-composer image.tar
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko \
+            build php-8.1-composer.yaml ghcr.io/realsamanrad/php:8.1-composer image.tar
           docker load < image.tar
-          docker tag ghcr.io/realsamanrad/php:8.1-composer-amd64 ghcr.io/realsamanrad/php:8.1-composer
-          docker push ghcr.io/realsamanrad/php:8.1-composer
+
+          docker push ghcr.io/realsamanrad/php:8.1-composer-amd64
+          docker push ghcr.io/realsamanrad/php:8.1-composer-arm64
+
+          docker manifest create ghcr.io/realsamanrad/php:8.1-composer \
+            ghcr.io/realsamanrad/php:8.1-composer-amd64 \
+            ghcr.io/realsamanrad/php:8.1-composer-arm64
+
+          docker manifest annotate ghcr.io/realsamanrad/php:8.1-composer \
+            ghcr.io/realsamanrad/php:8.1-composer-amd64 --arch amd64
+
+          docker manifest annotate ghcr.io/realsamanrad/php:8.1-composer \
+            ghcr.io/realsamanrad/php:8.1-composer-arm64 --arch arm64
+
+          docker manifest push ghcr.io/realsamanrad/php:8.1-composer
 
       - name: Build and Push PHP 8.1 FPM Alpine Image
         if: steps.check-files.outputs.php81fpm-alpine == 'true'
         run: |
           docker pull cgr.dev/chainguard/apko:latest
-          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko build php-fpm-8.1-alpine.yaml ghcr.io/realsamanrad/php:8.1-fpm-alpine image.tar
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko \
+            build php-8.1-fpm-alpine.yaml ghcr.io/realsamanrad/php:8.1-fpm-alpine image.tar
           docker load < image.tar
-          docker tag ghcr.io/realsamanrad/php:8.1-fpm-alpine-amd64 ghcr.io/realsamanrad/php:8.1-fpm-alpine
-          docker push ghcr.io/realsamanrad/php:8.1-fpm-alpine
+
+          docker push ghcr.io/realsamanrad/php:8.1-fpm-alpine-amd64
+          docker push ghcr.io/realsamanrad/php:8.1-fpm-alpine-arm64
+
+          docker manifest create ghcr.io/realsamanrad/php:8.1-fpm-alpine \
+            ghcr.io/realsamanrad/php:8.1-fpm-alpine-amd64 \
+            ghcr.io/realsamanrad/php:8.1-fpm-alpine-arm64
+
+          docker manifest annotate ghcr.io/realsamanrad/php:8.1-fpm-alpine \
+            ghcr.io/realsamanrad/php:8.1-fpm-alpine-amd64 --arch amd64
+            
+          docker manifest annotate ghcr.io/realsamanrad/php:8.1-fpm-alpine \
+            ghcr.io/realsamanrad/php:8.1-fpm-alpine-arm64 --arch arm64
+
+          docker manifest push ghcr.io/realsamanrad/php:8.1-fpm-alpine
 
       - name: Build and Push PHP 8.1 Dev Image
         if: steps.check-files.outputs.php81dev == 'true'

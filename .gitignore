@@ -2,3 +2,4 @@
 /*.tar
 /sbom-index.spdx.json
 /sbom-x86_64.spdx.json
+sbom-aarch64.spdx.json
