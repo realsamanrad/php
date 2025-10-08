@@ -7,6 +7,7 @@ on:
     paths:
       - "php-8.1-composer.yaml"
       - "php-8.1-fpm-alpine.yaml"
+      - "php-8.1-fpm-alpine-dev.yaml"
       - "frankenphp-8.1.yaml"
       - "frankenphp-8.1.dev.yaml"
       - "frankenphp-8.2.yaml"
@@ -50,6 +51,8 @@ jobs:
           filters: |
             php81composer:
               - 'php-8.1-composer.yaml'
+            php81fpm-alpine-dev:
+              - 'php-8.1-fpm-alpine-dev.yaml'
             php81fpm-alpine:
               - 'php-8.1-fpm-alpine.yaml'
             php81dev:
@@ -91,6 +94,29 @@ jobs:
             ghcr.io/realsamanrad/php:8.1-composer-arm64 --arch arm64
 
           docker manifest push ghcr.io/realsamanrad/php:8.1-composer
+
+      - name: Build and Push PHP 8.1 FPM Alpine Dev Image
+        if: steps.check-files.outputs.php81fpm-alpine-dev == 'true'
+        run: |
+          docker pull cgr.dev/chainguard/apko:latest
+          docker run --rm -v ${PWD}:/work -w /work cgr.dev/chainguard/apko \
+            build php-8.1-fpm-alpine-dev.yaml ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev image.tar
+          docker load < image.tar
+
+          docker push ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev-amd64
+          docker push ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev-arm64
+
+          docker manifest create ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev \
+            ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev-amd64 \
+            ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev-arm64
+
+          docker manifest annotate ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev \
+            ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev-amd64 --arch amd64
+            
+          docker manifest annotate ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev \
+            ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev-arm64 --arch arm64
+
+          docker manifest push ghcr.io/realsamanrad/php:8.1-fpm-alpine-dev
 
       - name: Build and Push PHP 8.1 FPM Alpine Image
         if: steps.check-files.outputs.php81fpm-alpine == 'true'
